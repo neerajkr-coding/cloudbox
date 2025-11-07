@@ -3,6 +3,7 @@ package com.application.cloudbox.Client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -14,7 +15,7 @@ import software.amazon.awssdk.services.s3.S3Configuration;
 
 import java.net.URI;
 
-@Service // TODO :: Reconsider this
+@Configuration
 public class R2Client {
 
     @Value("${cloudflare.r2.secretKey}")

@@ -1,47 +1,59 @@
 package com.application.cloudbox.Controller;
 
-import com.application.cloudbox.Client.R2Client;
+import com.application.cloudbox.Service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.model.Bucket;
-
-import java.util.ArrayList;
-import java.util.List;
+import software.amazon.awssdk.core.Response;
+import software.amazon.awssdk.http.SdkHttpResponse;
 
 @RestController
 public class FileController {
 
-    private final R2Client r2Client;
+    private final FileService fileService;
 
     @Autowired
-    public FileController(R2Client r2Client) {
-        this.r2Client = r2Client;
+    public FileController(FileService fileService) {
+        this.fileService = fileService;
     }
 
-    @GetMapping(path = "test", produces = "application/json")
-    private List<String> test() {
-
-        List<Bucket> buckets= r2Client.get_instance().listBuckets().buckets();
-
-        List<String> bucketNames = new ArrayList<>();
-
-        for(Bucket b : buckets) {
-            bucketNames.add(b.name());
-        }
-
-        return bucketNames;
-    }
+//    @GetMapping(path = "test", produces = "application/json")
+//    private List<String> test() {
+//        List<Bucket> buckets= r2Client.get_instance().listBuckets().buckets();
+//
+//        System.out.println(UUID.randomUUID());
+//
+//        List<String> bucketNames = new ArrayList<>();
+//        for(Bucket b : buckets) {
+//            bucketNames.add(b.name());
+//        }
+//
+//        return bucketNames;
+//    }
 
     @PostMapping("upload-file")
-    public String uploadFile(
+    public ResponseEntity<String> uploadFile(
             @RequestParam("file") MultipartFile file
             ) {
-        MultipartFile temp = file;
-        return "done";
+        return fileService.uploadFileToR2(file);
+    }
+
+    @PostMapping("delete-file")
+    public ResponseEntity<String> deleteFile(
+
+    ) {
+        return fileService.deleteFileFromR2();
+    }
+
+    @GetMapping("get-file")
+    public ResponseEntity<String> geteFile(
+
+    ) {
+        return fileService.getFileFromBucket();
     }
 
 }
